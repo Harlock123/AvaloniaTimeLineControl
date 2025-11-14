@@ -19,8 +19,11 @@ public partial class TimeLineControl : TemplatedControl
     private double _daySize = 15;
     private double _margin = 30;
     private double _marginScale = 1.5;
+    private double _dateHeaderHeight = 25;
+    private double _dateLabelLeftMargin = 20;
     private DateTime _startDate = DateTime.Now;
     private bool _testRender = false;
+    private bool _lineLabelsBold = true;
 
     // Colors
     private Color _lineColor = Color.Parse("#000000");
@@ -108,6 +111,26 @@ public partial class TimeLineControl : TemplatedControl
         }
     }
 
+    public double DateHeaderHeight
+    {
+        get => _dateHeaderHeight;
+        set
+        {
+            _dateHeaderHeight = Math.Max(0, value);
+            InvalidateVisual();
+        }
+    }
+
+    public double DateLabelLeftMargin
+    {
+        get => _dateLabelLeftMargin;
+        set
+        {
+            _dateLabelLeftMargin = Math.Max(0, value);
+            InvalidateVisual();
+        }
+    }
+
     public DateTime StartDate
     {
         get => _startDate;
@@ -124,6 +147,16 @@ public partial class TimeLineControl : TemplatedControl
         set
         {
             _testRender = value;
+            InvalidateVisual();
+        }
+    }
+
+    public bool LineLabelsBold
+    {
+        get => _lineLabelsBold;
+        set
+        {
+            _lineLabelsBold = value;
             InvalidateVisual();
         }
     }
@@ -207,21 +240,21 @@ public partial class TimeLineControl : TemplatedControl
 
     private void RedrawTimeline(DrawingContext context)
     {
-        _daysAcross = (int)Math.Floor((_totWidth - (_margin * 2)) / _daySize);
-        double innerRegionHeight = Math.Floor(_totHeight - (_margin * 2));
+        _daysAcross = (int)Math.Floor((_totWidth - (_margin * 2) - _dateLabelLeftMargin) / _daySize);
+        double innerRegionHeight = Math.Floor(_totHeight - (_margin * 2) - _dateHeaderHeight);
 
         int currentMonth = _startDate.Month;
 
         // Draw timeline grid
         for (int dayIndex = 0; dayIndex < _daysAcross; dayIndex++)
         {
-            double x = _margin + (dayIndex * _daySize);
+            double x = _margin + _dateLabelLeftMargin + (dayIndex * _daySize);
             DateTime currentDate = _startDate.AddDays(dayIndex);
             int dayOfMonth = currentDate.Day - 1;
 
             for (int lineIndex = 0; lineIndex < _numRows; lineIndex++)
             {
-                double y = (_margin * _marginScale) + ((innerRegionHeight / _numRows) * lineIndex);
+                double y = (_margin * _marginScale) + _dateHeaderHeight + ((innerRegionHeight / _numRows) * lineIndex);
 
                 // Label the start date
                 if (dayIndex == 0 && lineIndex == 0)
@@ -277,17 +310,20 @@ public partial class TimeLineControl : TemplatedControl
         // Draw line labels
         for (int lineIndex = 0; lineIndex < _numRows; lineIndex++)
         {
-            double y = (_margin * _marginScale) + ((innerRegionHeight / _numRows) * lineIndex);
+            double y = (_margin * _marginScale) + _dateHeaderHeight + ((innerRegionHeight / _numRows) * lineIndex);
             if (lineIndex < _lineLabels.Count)
             {
+                var typeface = new Typeface(
+                    "Courier New",
+                    weight: _lineLabelsBold ? FontWeight.Bold : FontWeight.Normal);
                 var text = new FormattedText(
                     _lineLabels[lineIndex],
                     new CultureInfo("en-US"),
                     FlowDirection.LeftToRight,
-                    new Typeface("Courier New"),
+                    typeface,
                     11,
                     Brushes.Black);
-                context.DrawText(text, new Point(_margin, y + _daySize + 10));
+                context.DrawText(text, new Point(_margin, y + _daySize + 4));
             }
         }
 
@@ -323,7 +359,7 @@ public partial class TimeLineControl : TemplatedControl
         int dayOffset = (int)(_hoverDate.Value - _startDate).TotalDays;
         if (dayOffset < 0 || dayOffset >= _daysAcross) return;
 
-        double x = _margin + (dayOffset * _daySize);
+        double x = _margin + _dateLabelLeftMargin + (dayOffset * _daySize);
 
         // Draw crosshair
         var pen = new Pen(new SolidColorBrush(Colors.Red), 1);
@@ -447,17 +483,18 @@ public partial class TimeLineControl : TemplatedControl
     {
         var position = e.GetPosition(this);
 
-        if (position.X >= _margin && (position.X - _margin) / _daySize <= _daysAcross)
+        double startX = _margin + _dateLabelLeftMargin;
+        if (position.X >= startX && (position.X - startX) / _daySize <= _daysAcross)
         {
-            int dayOffset = (int)Math.Floor((position.X - _margin) / _daySize);
+            int dayOffset = (int)Math.Floor((position.X - startX) / _daySize);
             _hoverDate = _startDate.AddDays(dayOffset);
 
-            double innerRegionHeight = Math.Floor(_totHeight - (_margin * 2));
+            double innerRegionHeight = Math.Floor(_totHeight - (_margin * 2) - _dateHeaderHeight);
             _lineOver = -1;
 
             for (int lineIndex = 0; lineIndex < _numRows; lineIndex++)
             {
-                double y = (_margin * _marginScale) + ((innerRegionHeight / _numRows) * lineIndex);
+                double y = (_margin * _marginScale) + _dateHeaderHeight + ((innerRegionHeight / _numRows) * lineIndex);
 
                 if (position.Y >= y && position.Y <= y + _daySize)
                 {
@@ -498,16 +535,17 @@ public partial class TimeLineControl : TemplatedControl
     {
         var position = e.GetPosition(this);
 
-        if (position.X >= _margin && (position.X - _margin) / _daySize <= _daysAcross)
+        double startX = _margin + _dateLabelLeftMargin;
+        if (position.X >= startX && (position.X - startX) / _daySize <= _daysAcross)
         {
-            int dayOffset = (int)Math.Floor((position.X - _margin) / _daySize);
+            int dayOffset = (int)Math.Floor((position.X - startX) / _daySize);
             var clickedDate = _startDate.AddDays(dayOffset);
 
-            double innerRegionHeight = Math.Floor(_totHeight - (_margin * 2));
+            double innerRegionHeight = Math.Floor(_totHeight - (_margin * 2) - _dateHeaderHeight);
 
             for (int lineIndex = 0; lineIndex < _numRows; lineIndex++)
             {
-                double y = (_margin * _marginScale) + ((innerRegionHeight / _numRows) * lineIndex);
+                double y = (_margin * _marginScale) + _dateHeaderHeight + ((innerRegionHeight / _numRows) * lineIndex);
 
                 if (position.Y >= y && position.Y <= y + _daySize)
                 {
