@@ -23,9 +23,10 @@ public partial class TimeLineControl : TemplatedControl
     private bool _testRender = false;
 
     // Colors
-    private readonly Color _lineColor = Color.Parse("#000000");
-    private readonly Color _lineColorLight = Color.Parse("#7f7f7f");
-    private readonly Color _backgroundColor = Color.Parse("#DEF3C9");
+    private Color _lineColor = Color.Parse("#000000");
+    private Color _lineColorLight = Color.Parse("#7f7f7f");
+    private Color _backgroundColor = Color.Parse("#DEF3C9");
+    private Color _dogEarColor = Color.Parse("#ff99ff");
 
     // State
     private DateTime? _hoverDate = null;
@@ -123,6 +124,47 @@ public partial class TimeLineControl : TemplatedControl
         set
         {
             _testRender = value;
+            InvalidateVisual();
+        }
+    }
+
+    public Color DogEarColor
+    {
+        get => _dogEarColor;
+        set
+        {
+            _dogEarColor = value;
+            InvalidateVisual();
+        }
+    }
+
+    public Color LineColor
+    {
+        get => _lineColor;
+        set
+        {
+            _lineColor = value;
+            InvalidateVisual();
+        }
+    }
+
+    public Color LineColorLight
+    {
+        get => _lineColorLight;
+        set
+        {
+            _lineColorLight = value;
+            InvalidateVisual();
+        }
+    }
+
+    public Color BackgroundColor
+    {
+        get => _backgroundColor;
+        set
+        {
+            _backgroundColor = value;
+            Background = new SolidColorBrush(_backgroundColor);
             InvalidateVisual();
         }
     }
@@ -383,7 +425,7 @@ public partial class TimeLineControl : TemplatedControl
 
     private void DrawDogEar(DrawingContext context, double x, double y)
     {
-        var brush = new SolidColorBrush(Color.Parse("#ff99ff"));
+        var brush = new SolidColorBrush(_dogEarColor);
         var geometry = new PathGeometry();
         var figure = new PathFigure { StartPoint = new Point(x + (_daySize / 2), y), IsClosed = true };
         figure.Segments.Add(new LineSegment { Point = new Point(x + _daySize, y) });
