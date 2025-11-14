@@ -12,7 +12,9 @@ A powerful timeline visualization control for Avalonia applications, ported from
 - **Month Transitions**: Automatic labeling of month boundaries
 - **Overlap Detection**: Dog-ear indicators when multiple items occupy the same date
 - **Test Render Mode**: Built-in visualization for all chicklet styles
-- **Fully Customizable**: Adjust day size, margins, colors, and more
+- **Fully Customizable**: Adjust day size, margins, colors, spacing, and more
+- **Color Customization**: Customize background, line, and dog ear colors
+- **Font Styling**: Bold or normal font weight for line labels
 
 ## Project Structure
 
@@ -129,11 +131,20 @@ Timeline.DaySize = 15;             // Width of each day in pixels
 Timeline.Margin = 30;              // Border margin
 Timeline.MarginScale = 1.5;        // Top margin scale factor
 Timeline.StartDate = DateTime.Now; // Visible start date
+Timeline.DateHeaderHeight = 25;    // Space above first line for date labels
+Timeline.DateLabelLeftMargin = 20; // Left margin for date labels
+
+// Customize colors
+Timeline.BackgroundColor = Color.Parse("#DEF3C9");  // Background color
+Timeline.LineColor = Color.Parse("#000000");        // Main line color (black)
+Timeline.LineColorLight = Color.Parse("#7f7f7f");   // Light line color (gray)
+Timeline.DogEarColor = Color.Parse("#ff99ff");      // Dog ear overlap indicator
 
 // Customize line labels
 Timeline.SetLineLabel(0, "Project A");
 Timeline.SetLineLabel(1, "Project B");
 Timeline.SetLineLabel(2, "Project C");
+Timeline.LineLabelsBold = true;    // Render line labels in bold font
 
 // Enable test render mode (shows all chicklet styles)
 Timeline.TestRender = true;
@@ -172,8 +183,15 @@ Timeline.StartDate = Timeline.StartDate.AddDays(7); // Forward 1 week
 | DaySize | double | 15 | Width of each day cell in pixels |
 | Margin | double | 30 | Border margin around the control |
 | MarginScale | double | 1.5 | Scale factor for top margin |
+| DateHeaderHeight | double | 25 | Space above first line for date labels |
+| DateLabelLeftMargin | double | 20 | Left margin to make room for date labels |
 | StartDate | DateTime | DateTime.Now | First visible date on the timeline |
 | TestRender | bool | false | Enable test mode showing all styles |
+| LineLabelsBold | bool | true | Render line labels in bold font |
+| BackgroundColor | Color | #DEF3C9 | Background color of the control |
+| LineColor | Color | #000000 | Main line color (black) |
+| LineColorLight | Color | #7f7f7f | Light line color used for borders (gray) |
+| DogEarColor | Color | #ff99ff | Color of dog ear overlap indicators |
 | LineLabels | IReadOnlyList<string> | - | Read-only list of line labels |
 
 ### Methods
