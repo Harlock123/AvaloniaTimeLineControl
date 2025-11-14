@@ -1,0 +1,42 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tl="clr-namespace:TimeLineControl;assembly=TimeLineControl"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+        x:Class="TimeLineControl.Demo.MainWindow"
+        Title="Timeline Control Demo"
+        Width="1000"
+        Height="600">
+
+    <Grid RowDefinitions="*,Auto,Auto">
+        <!-- Timeline Control -->
+        <tl:TimeLineControl x:Name="Timeline"
+                            Grid.Row="0"
+                            Margin="10"
+                            Height="250" />
+
+        <!-- Control Buttons -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,5" Spacing="5">
+            <Button Content="3 Rows" Click="OnSet3Rows" />
+            <Button Content="4 Rows" Click="OnSet4Rows" />
+            <Button Content="5 Rows" Click="OnSet5Rows" />
+            <Separator Width="10" />
+            <Button Content="Day Size +" Click="OnDaySizeUp" />
+            <Button Content="Day Size -" Click="OnDaySizeDown" />
+            <Separator Width="10" />
+            <Button Content="Forward 1 Day" Click="OnForwardDay" />
+            <Button Content="Back 1 Day" Click="OnBackDay" />
+            <Separator Width="10" />
+            <Button Content="Toggle Test Render" Click="OnToggleTestRender" />
+            <Button Content="Load Sample Data" Click="OnLoadSampleData" />
+        </StackPanel>
+
+        <!-- Status Display -->
+        <StackPanel Grid.Row="2" Margin="10,5" Spacing="5">
+            <TextBlock x:Name="HoverDateText" Text="Hover Date: (none)" />
+            <TextBlock x:Name="ClickedDateText" Text="Clicked Date: (none)" />
+        </StackPanel>
+    </Grid>
+
+</Window>
