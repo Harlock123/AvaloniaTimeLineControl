@@ -21,6 +21,7 @@ public partial class TimeLineControl : TemplatedControl
     private double _marginScale = 1.5;
     private double _dateHeaderHeight = 25;
     private double _dateLabelLeftMargin = 20;
+    private double _rightMargin = 25;
     private DateTime _startDate = DateTime.Now;
     private bool _testRender = false;
     private bool _lineLabelsBold = true;
@@ -127,6 +128,16 @@ public partial class TimeLineControl : TemplatedControl
         set
         {
             _dateLabelLeftMargin = Math.Max(0, value);
+            InvalidateVisual();
+        }
+    }
+
+    public double RightMargin
+    {
+        get => _rightMargin;
+        set
+        {
+            _rightMargin = Math.Max(0, value);
             InvalidateVisual();
         }
     }
@@ -240,7 +251,7 @@ public partial class TimeLineControl : TemplatedControl
 
     private void RedrawTimeline(DrawingContext context)
     {
-        _daysAcross = (int)Math.Floor((_totWidth - (_margin * 2) - _dateLabelLeftMargin) / _daySize);
+        _daysAcross = (int)Math.Floor((_totWidth - _margin - _rightMargin - _dateLabelLeftMargin) / _daySize);
         double innerRegionHeight = Math.Floor(_totHeight - (_margin * 2) - _dateHeaderHeight);
 
         int currentMonth = _startDate.Month;
@@ -361,9 +372,9 @@ public partial class TimeLineControl : TemplatedControl
 
         double x = _margin + _dateLabelLeftMargin + (dayOffset * _daySize);
 
-        // Draw crosshair
-        var pen = new Pen(new SolidColorBrush(Colors.Red), 1);
-        context.DrawLine(pen, new Point(x, 0), new Point(x, _totHeight));
+        // Draw semi-transparent box over the hovered column
+        var hoverBrush = new SolidColorBrush(Colors.Red, 0.3); // 30% opacity
+        context.FillRectangle(hoverBrush, new Rect(x, 0, _daySize, _totHeight));
 
         // Draw date text
         string dateStr = $"{_hoverDate.Value.Month}/{_hoverDate.Value.Day}/{_hoverDate.Value.Year}";
@@ -473,9 +484,20 @@ public partial class TimeLineControl : TemplatedControl
     // Event Handlers
     private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
-        int delta = e.Delta.Y > 0 ? 7 : -7;
-        _startDate = _startDate.AddDays(delta);
-        InvalidateVisual();
+        // Check if Ctrl key is pressed
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        {
+            // Zoom in/out by adjusting DaySize
+            double delta = e.Delta.Y > 0 ? 1 : -1;
+            DaySize = Math.Max(5, DaySize + delta);
+        }
+        else
+        {
+            // Normal scrolling
+            int delta = e.Delta.Y > 0 ? 7 : -7;
+            _startDate = _startDate.AddDays(delta);
+            InvalidateVisual();
+        }
         e.Handled = true;
     }
 
@@ -484,9 +506,9 @@ public partial class TimeLineControl : TemplatedControl
         var position = e.GetPosition(this);
 
         double startX = _margin + _dateLabelLeftMargin;
-        if (position.X >= startX && (position.X - startX) / _daySize <= _daysAcross)
+        if (position.X >= startX && (position.X - startX) / _daySize < _daysAcross)
         {
-            int dayOffset = (int)Math.Floor((position.X - startX) / _daySize);
+            int dayOffset = (int)((position.X - startX) / _daySize);
             _hoverDate = _startDate.AddDays(dayOffset);
 
             double innerRegionHeight = Math.Floor(_totHeight - (_margin * 2) - _dateHeaderHeight);
@@ -501,8 +523,9 @@ public partial class TimeLineControl : TemplatedControl
                     _lineOver = lineIndex;
                     _hoverLine = lineIndex;
 
-                    string metadata = GetMetaDataAt(lineIndex + 1, _hoverDate.Value);
-                    ToolTip.SetTip(this, metadata);
+                    // Subtract 1 day to account for the +1 offset in bitmap storage
+                    string metadata = GetMetaDataAt(lineIndex + 1, _hoverDate.Value.AddDays(-1));
+                    ToolTip.SetTip(this, string.IsNullOrWhiteSpace(metadata) ? null : metadata);
 
                     var args = new DateHoveredEventArgs(_hoverDate.Value, lineIndex, metadata);
                     RaiseEvent(args);
@@ -536,9 +559,9 @@ public partial class TimeLineControl : TemplatedControl
         var position = e.GetPosition(this);
 
         double startX = _margin + _dateLabelLeftMargin;
-        if (position.X >= startX && (position.X - startX) / _daySize <= _daysAcross)
+        if (position.X >= startX && (position.X - startX) / _daySize < _daysAcross)
         {
-            int dayOffset = (int)Math.Floor((position.X - startX) / _daySize);
+            int dayOffset = (int)((position.X - startX) / _daySize);
             var clickedDate = _startDate.AddDays(dayOffset);
 
             double innerRegionHeight = Math.Floor(_totHeight - (_margin * 2) - _dateHeaderHeight);
@@ -549,7 +572,8 @@ public partial class TimeLineControl : TemplatedControl
 
                 if (position.Y >= y && position.Y <= y + _daySize)
                 {
-                    string metadata = GetMetaDataAt(lineIndex + 1, clickedDate);
+                    // Subtract 1 day to account for the +1 offset in bitmap storage
+                    string metadata = GetMetaDataAt(lineIndex + 1, clickedDate.AddDays(-1));
                     var args = new DateClickedEventArgs(clickedDate, lineIndex, metadata);
                     RaiseEvent(args);
                     break;
