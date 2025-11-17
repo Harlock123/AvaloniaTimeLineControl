@@ -2,6 +2,11 @@
 
 A powerful timeline visualization control for Avalonia applications, ported from the TypeScript Timeline.ts component.
 
+![Sample TimeLine](ScreenShots/Screenshot1.png)
+
+![Sample TimeLine](ScreenShots/Screenshot2.png)
+
+
 ## Features
 
 - **Multiple Timeline Rows**: Display 1-10 parallel timeline rows with customizable labels
