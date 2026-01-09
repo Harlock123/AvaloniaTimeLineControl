@@ -2,9 +2,9 @@
 
 A powerful timeline visualization control for Avalonia applications, ported from the TypeScript Timeline.ts component.
 
-![Sample TimeLine](ScreenShots/Screenshot1.png)
+![Sample TimeLine](https://raw.githubusercontent.com/harlock123/AvaloniaTimeLineControl/main/ScreenShots/Screenshot1.png)
 
-![Sample TimeLine](ScreenShots/Screenshot2.png)
+![Sample TimeLine](https://raw.githubusercontent.com/harlock123/AvaloniaTimeLineControl/main/ScreenShots/Screenshot2.png)
 
 
 ## Features
