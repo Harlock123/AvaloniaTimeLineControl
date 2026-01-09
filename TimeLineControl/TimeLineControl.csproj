@@ -7,7 +7,7 @@
 
     <!-- NuGet Package Properties -->
     <PackageId>AvaloniaTimeLineControl</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Lonnie Watson</Authors>
     <Company>Lonnie Watson</Company>
     <Description>A powerful timeline visualization control for Avalonia applications. Features multiple timeline rows, 30 chicklet styles (10 colors × 3 shapes), date-based navigation, click/hover events, weekend highlighting, and overlap detection.</Description>
