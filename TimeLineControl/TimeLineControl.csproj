@@ -4,10 +4,32 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+
+    <!-- NuGet Package Properties -->
+    <PackageId>AvaloniaTimeLineControl</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Lonnie Watson</Authors>
+    <Company>Lonnie Watson</Company>
+    <Description>A powerful timeline visualization control for Avalonia applications. Features multiple timeline rows, 30 chicklet styles (10 colors × 3 shapes), date-based navigation, click/hover events, weekend highlighting, and overlap detection.</Description>
+    <PackageTags>avalonia;timeline;control;ui;visualization;chart;gantt;schedule</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Harlock123/AvaloniaTimeLineControl</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Harlock123/AvaloniaTimeLineControl</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+    <!-- Assembly Info -->
+    <Copyright>Copyright © Lonnie Watson 2026</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
