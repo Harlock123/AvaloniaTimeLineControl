@@ -11,7 +11,7 @@ A powerful timeline visualization control for Avalonia applications, ported from
 
 - **Multiple Timeline Rows**: Display 1-10 parallel timeline rows with customizable labels
 - **30 Chicklet Styles**: Combine 10 colors with 3 shapes (Box, Circle, Triangle)
-- **Date-based Navigation**: Mouse wheel and keyboard support for scrolling through dates
+- **Date-based Navigation**: Mouse wheel scrolls a week at a time; Ctrl+wheel changes the day size
 - **Interactive Events**: Click and hover events with metadata support
 - **Weekend Highlighting**: Visual indicators for weekends
 - **Month Transitions**: Automatic labeling of month boundaries
